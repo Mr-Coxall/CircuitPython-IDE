@@ -1,9 +1,108 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title> </title>
-    </head>
-    <body>
-        Hello, World!
-    </body>
+  <head>
+    <title>browser-amd-editor</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+  </head>
+  <body>
+  
+    <button style="height:30px;width:75px" type="button" onclick="alert('New')">New</button>
+    <button style="height:30px;width:75px" type="button" onclick="loadFileAsText()">Load</button>
+    <button style="height:30px;width:75px" type="button" onclick="saveTextAsFile()">Save</button>
+    
+    <div> </div>
+    
+    <div id="container" style="width:99vw;height:70vh;border:3px solid grey"></div>
+    <div id="console" style="width:99vw;height:25vh;border:3px solid grey"></div>
+    
+    // for resizing the screen
+    <script type="text/javascript">
+      window.addEventListener('resize', function () { 
+          "use strict";
+          window.location.reload(); 
+          console.log("Changed size")
+      });
+    
+    </script>
+    
+    <script type="text/javascript">
+      function destroyClickedElement(event)
+      {
+          document.body.removeChild(event.target);
+      }
+    
+    </script>
+    
+    <!-- OR ANY OTHER AMD LOADER HERE INSTEAD OF loader.js -->
+    <script src="./node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script>
+      var editor;  // moved this here, so I would have a reference to it for saving
+      require.config({ paths: { 'vs': './node_modules/monaco-editor/min/vs' }});
+    
+      require(['vs/editor/editor.main'], function() {
+        editor = monaco.editor.create(document.getElementById('container'), {
+          value: [
+            '#!/usr/bin/env python3',
+            '',
+            '# This program ...',
+            '',
+            '',
+            'def main():',
+            '    # this function ...',
+            '',
+            'if __name__ == "__main__":',
+            '    main()',
+            ''
+          ].join('\n'),
+          language: 'python'
+        });
+      });
+    
+      // my functions to load and save files
+      function loadFileAsText()
+      {
+        var input = document.createElement('input');
+        input.type = 'file';
+        
+        input.onchange = e => { 
+        
+           // getting a hold of the file reference
+           var file = e.target.files[0]; 
+        
+           // setting up the reader
+           var reader = new FileReader();
+           reader.readAsText(file,'UTF-8');
+        
+           // here we tell the reader what to do when it's done reading...
+           reader.onload = readerEvent => {
+              var content = readerEvent.target.result; // this is the content!
+              console.log( content );
+              editor.setValue(content);
+           }
+        
+        }
+        
+        input.click();
+      }
+      
+      function saveTextAsFile()
+      {
+          var textToSave = editor.getValue();
+          var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+          var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+          var fileNameToSaveAs = "code.py";
+       
+          var downloadLink = document.createElement("a");
+          downloadLink.download = fileNameToSaveAs;
+          downloadLink.innerHTML = "Download File";
+          downloadLink.href = textToSaveAsURL;
+          downloadLink.onclick = destroyClickedElement;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+       
+          downloadLink.click();
+      }
+    </script>
+  </body>
 </html>
