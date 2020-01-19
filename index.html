@@ -192,8 +192,7 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
       <button class="button" onclick="changeTheme();">Theme ⇢</button>
       <button class="button" onclick="hiddenCharacters();">Hidden ⇵</button>
       <span class="separator"></span>
-      <button class="button" onclick="about();">About ?</button>
-      <button class="button-right" onclick="location.href='https://github.com/Mr-Coxall/CircuitPython-IDE';">Code</button>   
+      <button class="button-right" onclick="location.href='./about.html';">About ?</button>   
     </div>
     <div id="top" style="background-color:black" class="split content">
       <textarea id="editor"></textarea>
@@ -297,11 +296,6 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
           editor.setOptions({
             showInvisibles: hidden,
           });
-        }
-
-        function about() {
-          // about
-          window.alert("CircuitPython Web IDE \n\nThis site is not only a text editor, it also gives you access to the REPL, so that you can see output and error messages from your CircuitPython hardware.");
         }
       </script>
     </div>
