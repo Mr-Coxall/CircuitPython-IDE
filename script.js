@@ -227,7 +227,7 @@ function initCheckboxes() {
 function toggleUIConnected(connected) {
   let lbl = 'Connect →';
   if (connected) {
-    lbl = 'Disconnect ↛';
+    lbl = 'Disconnect ⏏';
   }
   butConnect.textContent = lbl;
   ledCBs.forEach((cb) => {

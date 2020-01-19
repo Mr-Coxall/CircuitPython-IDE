@@ -91,6 +91,20 @@
         outline: none;
       }
 
+      .button-right {
+        float:right; /* move right */
+        background-color: #652F8F; /* Blinka purple */
+        border: none;
+        color: white;
+        padding: 15px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 8px;
+        outline: none;
+      }
+
       .input-button {
         display: inline-block;
         background-color: #652F8F; 
@@ -178,7 +192,8 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
       <button class="button" onclick="changeTheme();">Theme ⇢</button>
       <button class="button" onclick="hiddenCharacters();">Hidden ⇵</button>
       <span class="separator"></span>
-      <button class="button" onclick="about();">About ?</button>    
+      <button class="button" onclick="about();">About ?</button>
+      <button class="button-right" onclick="location.href='https://github.com/Mr-Coxall/CircuitPython-IDE';">Code</button>   
     </div>
     <div id="top" style="background-color:black" class="split content">
       <textarea id="editor"></textarea>
