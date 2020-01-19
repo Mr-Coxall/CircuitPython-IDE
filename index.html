@@ -119,6 +119,7 @@
       input[type="file"] {
         display: none;
       }
+      
       .separator {
         content: '';
         display: inline-block;
@@ -126,7 +127,13 @@
         margin: 0px 4px;
         height: 18px;
         width: 1px;
-    }
+      }
+
+      .repl-textarea {
+        height: 100%;
+        width: 100%;
+        font-size: 18px;
+      }
     </style>
 
     <script src="./src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -177,6 +184,7 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
         var themes = ["ace/theme/eclipse", "ace/theme/github", "ace/theme/ambiance", "ace/theme/twilight"];
         var themeNumber = 0;
         var hidden = false;
+        var currentFileName = null;
 
         var editor = ace.edit("editor");
         //editor.setTheme("ace/theme/twilight");
@@ -202,21 +210,35 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
           document.body.removeChild(event.target);
         }
 
-        function clearREPL() {
-          // clear REPL
-          document.getElementById("log").innerHTML="";
+        function newFile() {
+          // new file, meaning save the current file and clear the IDE
+          saveFile();
+          // now clear the IDE
+          editor.setValue("");
         }
 
         function loadFile() {
           // load file
         }
 
-        function newFile() {
-          // new file
+        function saveFile() {
+          // save file, if currentFileName = null, ask for file name first
+          if (currentFileName == null) {
+            // get file name
+          }
+
+          // save file, to currentFileName
         }
 
-        function saveFile() {
-          // save file
+        function runFile() {
+          // run the current file, meaning save it!
+          saveFile();
+        }
+
+        function clearREPL() {
+          // clear REPL
+          document.getElementById("log").innerHTML="";
+          log.textContent = null;
         }
 
         function fontPlus() {
@@ -266,7 +288,8 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
       </script>
     </div>
     <div id="bottom" class="split content">
-      <pre id="log"></pre>
+      <textarea id="log" class="repl-textarea">
+      </textarea>
     </div>
   </body>
 </html>
