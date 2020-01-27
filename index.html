@@ -175,14 +175,14 @@
       <code>chrome://flags</code>
     </div>
     <div>
-      <button class="image-button" id="imageButton"><img src="./adafruit_blinka_computer.png"></button>
+      <a href="https://circuitpython.org" target="_blank"><button class="image-button" id="imageButton"><img src="./adafruit_blinka_computer.png"></button></a>
       <span class="separator"></span>
       <button class="button" id="butConnect">Connect →</button>
       <span class="separator"></span>
       <button class="button" onclick="newFile();">New +</button>
       <label class="input-button"><input accept=".py,
-text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</label>
-      <button class="button" onclick="saveFile();">Save ⤓</button>
+text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>Load ⤒</label>
+      <button class="button" id="saveToFile" onclick="saveFile();">Save ⤓</button>
       <span class="separator"></span>
       <button class="button" onclick="runFile();">Run ►</button>
       <button class="button" id="butClear" onclick="clearREPL();">Clear ⇪</button>
@@ -191,7 +191,6 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
       <button class="button" onclick="fontMinus();">Font -</button>
       <button class="button" onclick="changeTheme();">Theme ⇢</button>
       <button class="button" onclick="hiddenCharacters();">Hidden ⇵</button>
-      <span class="separator"></span>
       <button class="button-right" onclick="location.href='./about.html';">About ?</button>   
     </div>
     <div id="top" style="background-color:black" class="split content">
@@ -234,22 +233,90 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
           editor.setValue("");
         }
 
+        // got this from here: https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
         function loadFile() {
           // load file
+
+          // ensure you save the file first, before whipping it out
+          //saveFile();
+
+          const selectedFile = document.getElementById('fileToLoad').files[0];
+          // update the new file name
+          currentFileName = selectedFile.name;
+          
+          const reader = new FileReader();
+          reader.onload = (function(evt) { 
+            var result = evt.target.result;
+            editor.setValue(result, 1);
+          });
+          reader.readAsText(selectedFile);
         }
+
+        function download(strData, strFileName, strMimeType) {
+            var D = document,
+                A = arguments,
+                a = D.createElement("a"),
+                d = A[0],
+                n = A[1],
+                t = A[2] || "text/plain";
+
+            //build download link:
+            a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
+
+            if ('download' in a) { //FF20, CH19
+                a.setAttribute("download", n);
+                a.innerHTML = "downloading...";
+                D.body.appendChild(a);
+                setTimeout(function() {
+                    var e = D.createEvent("MouseEvents");
+                    e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                    a.dispatchEvent(e);
+                    D.body.removeChild(a);
+                }, 66);
+                return true;
+            }; /* end if('download' in a) */
+
+            //do iframe dataURL download: (older W3)
+            var f = D.createElement("iframe");
+            D.body.appendChild(f);
+            f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
+            setTimeout(function() {
+                D.body.removeChild(f);
+            }, 333);
+            return true;
+          }
+
 
         function saveFile() {
           // save file, if currentFileName = null, ask for file name first
           if (currentFileName == null) {
-            // get file name
+            currentFileName = "code.py";
           }
+          download(editor.getValue(), currentFileName, 'text/plain');
 
-          // save file, to currentFileName
+
+          /* 
+          var textToSave = editor.getValue();
+          var textToSaveAsBlob = new Blob([textToSave], {type:"text/plain"});
+          var textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+          var fileNameToSaveAs = currentFileName;
+       
+          var downloadLink = document.createElement("a");
+          downloadLink.download = fileNameToSaveAs;
+          downloadLink.innerHTML = "Download File";
+          downloadLink.href = textToSaveAsURL;
+          downloadLink.onclick = destroyClickedElement;
+          downloadLink.style.display = "none";
+          document.body.appendChild(downloadLink);
+       
+          downloadLink.click();
+          */
         }
 
         function runFile() {
-          // run the current file, meaning save it!
-          saveFile();
+          // run the current file, code is in script.js since you are sending CNTR-D to REPL
+          //sendCTRLD();
+          serialConnection();
         }
 
         function clearREPL() {
@@ -297,6 +364,26 @@ text/plain" type="file" id="fileToLoad" onclick="loadFile(event);"/>Load ⤒</la
             showInvisibles: hidden,
           });
         }
+
+        async function serialConnection(){
+          const requestOptions = {
+            // Filter on devices with the Arduino USB vendor ID.
+            //filters: [{ vendorId: 0x239a }], // for adafruit
+          };
+
+          // Request an Arduino from the user.
+          const port = await navigator.serial.requestPort(requestOptions);
+
+          // Open and begin reading.
+          await port.open({ baudrate: 115200 });
+          const reader = port.in.getReader();
+          while (true) {
+            const {done, data} = await reader.read();
+            if (done) break;
+            console.log(data);
+}
+        }
+
       </script>
     </div>
     <div id="bottom" class="split content">

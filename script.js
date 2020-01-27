@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+function sendCTRLD() {
+  writeToStream('\x04');
+}
 
 /**
  * @name connect
@@ -67,6 +70,7 @@ async function connect() {
 
   // CODELAB: Send CTRL-C and turn off echo on REPL
   //writeToStream('\x03');
+  //writeToStream('\x04');
   //writeToStream('\x03', 'echo(false);');
   //writeToStream('');
   //writeToStream('python');
@@ -167,13 +171,18 @@ async function readLoop() {
  */
 function writeToStream(...lines) {
   // CODELAB: Write to output stream
-  console.log("Started to write")
-  const writer = outputStream.getWriter();
-  lines.forEach((line) => {
-    console.log('[SEND]', line);
-    writer.write(line + '\n');
-  });
-  writer.releaseLock();
+  //console.log("Started to write")
+  if (outputStream != null) {
+    const writer = outputStream.getWriter();
+    lines.forEach((line) => {
+      console.log('[SEND]', line);
+      writer.write(line + '\n');
+    });
+    writer.releaseLock();
+  }
+  else {
+    console.log("Can not write, no connection.");
+  }
 
 }
 
