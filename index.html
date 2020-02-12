@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
 
     <script>
       // Redirect to HTTPS if HTTP is requested.
@@ -179,19 +180,20 @@
       <span class="separator"></span>
       <button class="button" id="butConnect">Connect →</button>
       <span class="separator"></span>
-      <button class="button" onclick="newFile();">New +</button>
+      <!-- <button class="button" onclick="newFile();">New +</button> -->
       <label class="input-button"><input accept=".py,
 text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>Load ⤒</label>
       <button class="button" id="saveToFile" onclick="saveFile();">Save ⤓</button>
       <span class="separator"></span>
       <button class="button" onclick="runFile();">Run ►</button>
-      <button class="button" id="butClear" onclick="clearREPL();">Clear ⇪</button>
+      <button class="button" onclick="stopFile();">Stop ■</button>
+      <button class="button" id="butClear" onclick="clearREPL();">Clear ⎚</button>
       <span class="separator"></span>
       <button class="button" onclick="fontPlus();">Font +</button>
       <button class="button" onclick="fontMinus();">Font -</button>
       <button class="button" onclick="changeTheme();">Theme ⇢</button>
-      <button class="button" onclick="hiddenCharacters();">Hidden ⇵</button>
-      <button class="button-right" onclick="location.href='./about.html';">About ?</button>   
+      <button class="button" onclick="hiddenCharacters();">Hidden ⇵</button> 
+      <a href="https://github.com/Mr-Coxall/CircuitPython-IDE" target="_blank"><button class="button-right">About ?</button></a>  
     </div>
     <div id="top" style="background-color:black" class="split content">
       <textarea id="editor"></textarea>
@@ -315,8 +317,13 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
 
         function runFile() {
           // run the current file, code is in script.js since you are sending CNTR-D to REPL
-          //sendCTRLD();
-          serialConnection();
+          sendCTRLD();
+          //serialConnection();
+        }
+
+        function stopFile() {
+          // stop program from running
+          sendCTRLC();       
         }
 
         function clearREPL() {

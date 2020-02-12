@@ -51,6 +51,10 @@ function sendCTRLD() {
   writeToStream('\x04');
 }
 
+function sendCTRLC() {
+  writeToStream('\x03');
+}
+
 /**
  * @name connect
  * Opens a Web Serial connection to a micro:bit and sets up the input and
