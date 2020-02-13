@@ -118,7 +118,7 @@ async function clickConnect() {
   // CODELAB: Add disconnect code here.
   // stop running program
   sendCTRLC();
-  
+
   if (port) {
     await disconnect();
     toggleUIConnected(false);
@@ -144,7 +144,9 @@ async function readLoop() {
   while (true) {
     const { value, done } = await reader.read();
     if (value) {
-      log.textContent += value + '\n';
+      log.textContent += value;
+      // removed the carriage return, for some reason CircuitPython does not need it
+      //log.textContent += value + '\n';
       log.scrollTop = log.scrollHeight;
     }
     if (done) {
