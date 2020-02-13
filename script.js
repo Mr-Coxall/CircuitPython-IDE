@@ -25,15 +25,7 @@ let inputStream;
 let outputStream;
 
 var log = document.getElementById('log');
-const ledCBs = document.querySelectorAll('input.led');
-const divLeftBut = document.getElementById('leftBut');
-const divRightBut = document.getElementById('rightBut');
 const butConnect = document.getElementById('butConnect');
-
-const GRID_HAPPY = [1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,1,0,1,1,1,0];
-const GRID_SAD =   [1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,1,0,0,0,1];
-const GRID_OFF =   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-const GRID_HEART = [0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,0,0,1,0,0];
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -48,10 +40,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function sendCTRLD() {
+  // restart the program
   writeToStream('\x04');
 }
 
 function sendCTRLC() {
+  // stop the program
   writeToStream('\x03');
 }
 
@@ -65,19 +59,12 @@ async function connect() {
   // - Request a port and open a connection.
   port = await navigator.serial.requestPort();
   // - Wait for the port to open.
-  await port.open({ baudrate: 9600 });
+  await port.open({ baudrate: 115200 });
 
   // CODELAB: Add code setup the output stream here.
   const encoder = new TextEncoderStream();
   outputDone = encoder.readable.pipeTo(port.writable);
   outputStream = encoder.writable;
-
-  // CODELAB: Send CTRL-C and turn off echo on REPL
-  //writeToStream('\x03');
-  //writeToStream('\x04');
-  //writeToStream('\x03', 'echo(false);');
-  //writeToStream('');
-  //writeToStream('python');
 
   // CODELAB: Add code to read the stream here.
   let decoder = new TextDecoderStream();
@@ -143,6 +130,12 @@ async function clickConnect() {
   // CODELAB: Initialize micro:bit buttons.
 
   toggleUIConnected(true);
+  console.log("Connected")
+
+  // stop program from running
+  console.log("Stop & clear")
+  sendCTRLC();
+  clearREPL();
 }
 
 
@@ -212,42 +205,10 @@ class LineBreakTransformer {
   }
 }
 
-
-/**
- * @name JSONTransformer
- * TransformStream to parse the stream into a JSON object.
- */
-class JSONTransformer {
-  transform(chunk, controller) {
-    // CODELAB: Attempt to parse JSON content
-
-  }
-}
-
-
-/**
- * The code below is mostly UI code and is provided to simplify the codelab.
- */
-
-function initCheckboxes() {
-  ledCBs.forEach((cb) => {
-    cb.addEventListener('change', () => {
-      sendGrid();
-    });
-  });
-}
-
 function toggleUIConnected(connected) {
   let lbl = 'Connect →';
   if (connected) {
     lbl = 'Disconnect ⏏';
   }
   butConnect.textContent = lbl;
-  ledCBs.forEach((cb) => {
-    if (connected) {
-      cb.removeAttribute('disabled');
-      return;
-    }
-    cb.setAttribute('disabled', true);
-  });
 }
