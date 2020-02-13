@@ -116,6 +116,9 @@ async function disconnect() {
  */
 async function clickConnect() {
   // CODELAB: Add disconnect code here.
+  // stop running program
+  sendCTRLC();
+  
   if (port) {
     await disconnect();
     toggleUIConnected(false);
@@ -125,17 +128,10 @@ async function clickConnect() {
   // CODELAB: Add connect code here.
   await connect();
 
-  // CODELAB: Reset the grid on connect here.
-
-  // CODELAB: Initialize micro:bit buttons.
-
   toggleUIConnected(true);
-  console.log("Connected")
+  console.log("Connected");
 
-  // stop program from running
-  console.log("Stop & clear")
-  sendCTRLC();
-  clearREPL();
+
 }
 
 
@@ -172,7 +168,7 @@ function writeToStream(...lines) {
   if (outputStream != null) {
     const writer = outputStream.getWriter();
     lines.forEach((line) => {
-      console.log('[SEND]', line);
+      //console.log('[SEND]', line);
       writer.write(line + '\n');
     });
     writer.releaseLock();

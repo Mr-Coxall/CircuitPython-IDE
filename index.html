@@ -28,7 +28,6 @@
       }
 
       .ace_editor {
-        position:relative; 
         top: 0;
         right: 0;
         bottom: 0;
@@ -42,13 +41,14 @@
         box-sizing: border-box;
         overflow-y: auto;
         overflow-x: hidden;
+        snapOffset: 0;
       }
 
       .top {
         position:relative;
       }
 
-      .bottom {
+      .log {
         position:relative;
       }
 
@@ -70,13 +70,6 @@
 
       .gutter.gutter-vertical {
         cursor: row-resize;
-      }
-
-      .split.split-horizontal,
-
-      .gutter.gutter-horizontal {
-        height: 100%;
-        float: left;
       }
 
       .button {
@@ -151,6 +144,7 @@
         height: 100%;
         width: 100%;
         font-size: 18px;
+        outline-width: 0;
       }
     </style>
 
@@ -159,7 +153,7 @@
 
     <script type="text/javascript">
       window.onload=function(){
-        Split(['#top', '#bottom'], {
+        Split(['#top', '#log'], {
           gutterSize: 10,
           sizes: [75, 25],
           direction: 'vertical',
@@ -199,18 +193,19 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
       <script>
         var fontSize = 24;
         var themes = ["ace/theme/eclipse", "ace/theme/github", "ace/theme/ambiance", "ace/theme/twilight"];
-        var themeNumber = 0;
+        var themeNumber = 3;
         var hidden = false;
         var currentFileName = null;
 
         var editor = ace.edit("editor");
         //editor.setTheme("ace/theme/twilight");
-        editor.setTheme(themes[0]);
+        editor.setTheme(themes[themeNumber]);
         editor.session.setMode("ace/mode/python");
         // use setOptions method to set several options at once
         editor.setOptions({
           autoScrollEditorIntoView: true,
           copyWithEmptySelection: true,
+          autoScrollEditorIntoView: true,
           tabSize: 4, // python standard, 4 spaces
           useSoftTabs: true, // python standard no tabs, spaces
           showInvisibles: hidden,
@@ -227,16 +222,10 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
           document.body.removeChild(event.target);
         }
 
-        function newFile() {
-          // new file, meaning save the current file and clear the IDE
-          saveFile();
-          // now clear the IDE
-          editor.setValue("");
-        }
-
         // got this from here: https://stackoverflow.com/questions/21012580/is-it-possible-to-write-data-to-file-using-only-javascript
         function loadFile() {
-          // load file
+          // clear editor first
+          editor.setValue("");
 
           const selectedFile = document.getElementById('fileToLoad').files[0];
           // update the new file name
@@ -251,39 +240,38 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
         }
 
         function download(strData, strFileName, strMimeType) {
-            var D = document,
-                A = arguments,
-                a = D.createElement("a"),
-                d = A[0],
-                n = A[1],
-                t = A[2] || "text/plain";
+          var D = document,
+              A = arguments,
+              a = D.createElement("a"),
+              d = A[0],
+              n = A[1],
+              t = A[2] || "text/plain";
 
-            //build download link:
-            a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
+          //build download link:
+          a.href = "data:" + strMimeType + "charset=utf-8," + escape(strData);
 
-            if ('download' in a) { //FF20, CH19
-                a.setAttribute("download", n);
-                a.innerHTML = "downloading...";
-                D.body.appendChild(a);
-                setTimeout(function() {
-                    var e = D.createEvent("MouseEvents");
-                    e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                    a.dispatchEvent(e);
-                    D.body.removeChild(a);
-                }, 66);
-                return true;
-            }; /* end if('download' in a) */
-
-            //do iframe dataURL download: (older W3)
-            var f = D.createElement("iframe");
-            D.body.appendChild(f);
-            f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
+          if ('download' in a) { 
+            a.setAttribute("download", n);
+            a.innerHTML = "downloading...";
+            D.body.appendChild(a);
             setTimeout(function() {
-                D.body.removeChild(f);
-            }, 333);
+                var e = D.createEvent("MouseEvents");
+                e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                a.dispatchEvent(e);
+                D.body.removeChild(a);
+            }, 66);
             return true;
-          }
+          }; /* end if('download' in a) */
 
+          //do iframe dataURL download: (older W3)
+          var f = D.createElement("iframe");
+          D.body.appendChild(f);
+          f.src = "data:" + (A[2] ? A[2] : "application/octet-stream") + (window.btoa ? ";base64" : "") + "," + (window.btoa ? window.btoa : escape)(strData);
+          setTimeout(function() {
+              D.body.removeChild(f);
+          }, 333);
+          return true;
+        }
 
         function saveFile() {
           // save file, if currentFileName = null, ask for file name first
@@ -296,7 +284,6 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
         function runFile() {
           // run the current file, code is in script.js since you are sending CNTR-D to REPL
           sendCTRLD();
-          //serialConnection();
         }
 
         function stopFile() {
@@ -352,9 +339,6 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
 
       </script>
     </div>
-    <div id="bottom" class="split content">
-      <textarea id="log" class="repl-textarea">
-      </textarea>
-    </div>
+    <textarea id="log" class="repl-textarea"></textarea>
   </body>
 </html>
