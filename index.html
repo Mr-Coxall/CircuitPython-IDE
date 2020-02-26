@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title></title>
+    <title>CircuitPython IDE</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="robots" content="noindex, nofollow">
     <meta name="googlebot" content="noindex, nofollow">
@@ -158,6 +158,7 @@
           sizes: [75, 25],
           direction: 'vertical',
         });
+        //document.getElementById("butClear").disabled = true;
       }
     </script>
   </head>
@@ -178,8 +179,8 @@
 text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>Load ⤒</label>
       <button class="button" id="saveToFile" onclick="saveFile();">Save ⤓</button>
       <span class="separator"></span>
-      <button class="button" onclick="runFile();">Run ►</button>
-      <button class="button" onclick="stopFile();">Stop ■</button>
+      <button class="button" id="butRun" onclick="runFile();">Run ►</button>
+      <button class="button" id="butStop" onclick="stopFile();">Stop ■</button>
       <button class="button" id="butClear" onclick="clearREPL();">Clear ⎚</button>
       <span class="separator"></span>
       <button class="button" onclick="fontPlus();">Font +</button>
