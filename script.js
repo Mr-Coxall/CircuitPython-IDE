@@ -206,7 +206,7 @@ class LineBreakTransformer {
 function toggleUIConnected(connected) {
   let lbl = 'Connect →';
   if (connected) {
-    lbl = 'Disconnect ɵ';
+    lbl = 'Disconnect x';
   }
   butConnect.textContent = lbl;
 }
