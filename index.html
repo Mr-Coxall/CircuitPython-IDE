@@ -167,11 +167,6 @@
   </head>
 
   <body>
-    <div id="notSupported">
-      Sorry, <b>Web Serial</b> is not supported on this device, make sure you're 
-      running Chrome 78 or later and have enabled the 
-      <code><a href="chrome://flags/#enable-experimental-web-platform-features">chrome://flags/#enable-experimental-web-platform-features</a></code>
-    </div>
     <div>
       <a href="https://circuitpython.org" target="_blank"><button class="image-button" id="imageButton"><img src="./adafruit_blinka_computer.png"></button></a>
       <span class="separator"></span>
@@ -342,19 +337,5 @@ text/plain" type="file" id="fileToLoad" name="myFiles" onchange="loadFile();"/>L
 
       </script>
     </div>
-    <table border="0">
-      <tr>
-        <textarea id="log" class="repl-textarea"></textarea>
-      </tr>
-      <tr>
-        <td nowrap><label for="repl_input">REPL Input: </label></td>
-        <td width="100%">
-          <input name="repl_input" id="repl_input" type="text" style="width: 100%; font-size: 18px;"/>
-        </td>
-        <td>
-          <input type="button" onclick="writeToStream(repl_input.value);" value="Send" style="height:27px; width:50px"/>
-        </td> 
-      </tr>
-    </table>
   </body>
 </html>
